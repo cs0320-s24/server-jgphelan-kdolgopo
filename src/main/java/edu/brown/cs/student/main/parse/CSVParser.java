@@ -67,10 +67,8 @@ public class CSVParser<T> {
       }
     } catch (FileNotFoundException e) {
       System.err.println("File not found or is outside of the directory");
-      System.exit(1);
     } catch (IOException e) {
       System.err.println("The reader cannot be read");
-      System.exit(1);
     }
     return parsed;
   }
