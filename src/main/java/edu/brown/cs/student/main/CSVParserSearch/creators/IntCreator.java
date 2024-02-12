@@ -1,7 +1,7 @@
-package edu.brown.cs.student.main.creators;
+package edu.brown.cs.student.main.CSVParserSearch.creators;
 
-import edu.brown.cs.student.main.parse.CreatorFromRow;
-import edu.brown.cs.student.main.parse.FactoryFailureException;
+import edu.brown.cs.student.main.CSVParserSearch.parse.CreatorFromRow;
+import edu.brown.cs.student.main.CSVParserSearch.parse.FactoryFailureException;
 import java.util.ArrayList;
 import java.util.List;
 

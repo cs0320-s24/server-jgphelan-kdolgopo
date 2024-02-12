@@ -3,11 +3,11 @@ package edu.brown.cs.student.main;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-import edu.brown.cs.student.main.creators.Car;
-import edu.brown.cs.student.main.creators.CarCreator;
-import edu.brown.cs.student.main.creators.StringCreator;
-import edu.brown.cs.student.main.parse.CSVParser;
-import edu.brown.cs.student.main.search.Search;
+import edu.brown.cs.student.main.CSVParserSearch.creators.Car;
+import edu.brown.cs.student.main.CSVParserSearch.creators.CarCreator;
+import edu.brown.cs.student.main.CSVParserSearch.creators.StringCreator;
+import edu.brown.cs.student.main.CSVParserSearch.parse.CSVParser;
+import edu.brown.cs.student.main.CSVParserSearch.search.Search;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
