@@ -23,7 +23,6 @@
   </properties>
 
   <dependencies>
-
     <!--
            We use Moshi for serialization/deserialization of JSON data.
            Moshi 1.13.0 was released in December 2021.
@@ -32,6 +31,12 @@
            The adapters README.md includes a "latest.version" version; replaced with
            latest version as of August 2022.
        -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>33.0.0-jre</version>
+    </dependency>
+
     <dependency>
       <groupId>com.squareup.moshi</groupId>
       <artifactId>moshi</artifactId>
