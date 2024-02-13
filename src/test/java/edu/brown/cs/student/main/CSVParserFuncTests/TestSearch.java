@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main;
+package edu.brown.cs.student.main.CSVParserFuncTests;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testng.AssertJUnit.assertEquals;
