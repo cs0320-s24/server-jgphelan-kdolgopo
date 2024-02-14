@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Handler {
+public class CSVHandler {
 
   private static CSVParser<List<String>> parser;
   private static Search<List<String>> search;
