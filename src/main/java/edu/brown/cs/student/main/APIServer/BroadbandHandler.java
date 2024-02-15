@@ -17,7 +17,7 @@ import spark.Route;
 
 public class BroadbandHandler implements Route {
 
-  private static final String CENSUS_API_URL = "https://api.census.gov/data/2010/sf1";
+  private static final String CENSUS_API_URL = "https://api.census.gov/data/2010/variables";
 
   @Override
   public Object handle(Request request, Response response) {
@@ -37,7 +37,7 @@ public class BroadbandHandler implements Route {
         return serialize(responseMap);
       }
 
-      String query = "county:" + countyCode + "&state:" + stateCode;
+      String query = "county:" + countyCode + "&in=state:" + stateCode;
 
       String broadbandData = fetchBroadbandData(query);
 
@@ -56,19 +56,10 @@ public class BroadbandHandler implements Route {
     }
   }
 
-  private String getStateCode(String stateName) {
-    return "06"; // or code
-  }
-
-  private String getCountyCode(String stateCode, String countyName) {
-
-    return "001"; // or code
-  }
-
   private String fetchBroadbandData(String query)
       throws URISyntaxException, IOException, InterruptedException {
     // Build request to the Census API for broadband data
-    URI uri = new URI(CENSUS_API_URL + "?get=S2802_C03_022E&for=" + query);
+    URI uri = new URI(CENSUS_API_URL + "?get=NAME&for=" + query);
     HttpRequest httpRequest = HttpRequest.newBuilder()
         .uri(uri)
         .GET()
