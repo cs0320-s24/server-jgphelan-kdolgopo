@@ -17,7 +17,7 @@ import spark.Route;
 
 public class BroadbandHandler implements Route {
 
-  private static final String CENSUS_API_URL = "https://api.census.gov/data/2010/sf1";
+  private static final String CENSUS_API_URL = "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:*&in=state:06";
 
   @Override
   public Object handle(Request request, Response response) {
