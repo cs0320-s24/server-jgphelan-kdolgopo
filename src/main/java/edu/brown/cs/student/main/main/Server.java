@@ -46,7 +46,7 @@ public class Server {
     CSVHandler csvHandler = new CSVHandler();
     BroadbandHandler broadbandHandler = new BroadbandHandler();
     CacheConfiguration cacheConfig = new CacheConfiguration(100, 10, TimeUnit.MINUTES);
-    EvictionStrategy<?, ?> evictionStrategy = new EvictionStrategy.SizeBasedEvictionStrategy<>(100);
+    EvictionStrategy<?, ?> evictionStrategy = new EvictionStrategy.SizeBasedEvictionStrategy<>();
 
     // Create and start the server
     Server server = new Server(4567, csvHandler, broadbandHandler, cacheConfig, evictionStrategy);

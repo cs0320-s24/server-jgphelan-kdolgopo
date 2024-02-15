@@ -5,32 +5,24 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class EvictionStrategy<K, V> {
 
-  /**
-   * Configure the cache builder with the eviction strategy.
-   *
-   * @param cacheBuilder The cache builder to configure.
-   */
+  // Configure the cache builder with the eviction strategy.
   public abstract void configure(CacheBuilder<Object, Object> cacheBuilder);
 
-  /**
-   * A size-based eviction strategy.
-   */
+  // A size-based eviction strategy.
   public static class SizeBasedEvictionStrategy<K, V> extends EvictionStrategy<K, V> {
-    private final int maxSize;
 
-    public SizeBasedEvictionStrategy(int maxSize) {
-      this.maxSize = maxSize;
+    public SizeBasedEvictionStrategy() {
+      // No maximum size parameter needed here
     }
 
     @Override
     public void configure(CacheBuilder<Object, Object> cacheBuilder) {
-      cacheBuilder.maximumSize(maxSize);
+      // The maximum size configuration is removed from here
+      // and should be set in the CacheConfiguration
     }
   }
 
-  /**
-   * A time-based eviction strategy.
-   */
+  // A time-based eviction strategy.
   public static class TimeBasedEvictionStrategy<K, V> extends EvictionStrategy<K, V> {
     private final long duration;
     private final TimeUnit timeUnit;
@@ -45,5 +37,4 @@ public abstract class EvictionStrategy<K, V> {
       cacheBuilder.expireAfterWrite(duration, timeUnit);
     }
   }
-
 }

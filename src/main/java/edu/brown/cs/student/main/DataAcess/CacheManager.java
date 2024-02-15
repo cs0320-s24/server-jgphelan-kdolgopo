@@ -14,8 +14,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The CacheManager class manages caching for various types of data. It leverages Google's Guava library
@@ -26,7 +24,7 @@ import org.slf4j.LoggerFactory;
  */
 
 public class CacheManager<K, V> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(CacheManager.class);
+
   private LoadingCache<K, V> cache;
 
 
@@ -67,7 +65,6 @@ public class CacheManager<K, V> {
       String apiResponse = makeApiRequest(apiUrl);
       return parseApiResponse(apiResponse);
     } catch (IOException e) {
-      LOGGER.error("Error fetching data from API: ", e);
       throw e;
     }
   }
@@ -88,11 +85,15 @@ public class CacheManager<K, V> {
     String year = "2023"; // Example year, adjust as needed
     String dataset = "acs/acs5"; // Example dataset, adjust as needed
 
+    //https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:*&in=state:06
+
     // Constructing the base URL
     String url = baseUrl + year + "/" + dataset;
 
     // Constructing the query parameters
-    url += "?get=VARIABLES";
+    url += "/subject/?get=VARIABLES";
+
+    url += "?get=NAME";
 
     // Adding geographic filters
     // The 'for' and 'in' parameters should use the county and state codes
