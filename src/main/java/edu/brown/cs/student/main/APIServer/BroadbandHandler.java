@@ -15,6 +15,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+
 public class BroadbandHandler implements Route {
 
   private static final String CENSUS_API_URL = "https://api.census.gov/data/2010/sf1";
@@ -65,14 +66,16 @@ public class BroadbandHandler implements Route {
     return "001"; // or code
   }
 
-  private String fetchBroadbandData(String query) throws URISyntaxException, IOException, InterruptedException {
+  private String fetchBroadbandData(String query)
+      throws URISyntaxException, IOException, InterruptedException {
     // Build request to the Census API for broadband data
     URI uri = new URI(CENSUS_API_URL + "?get=S2802_C03_022E&for=" + query);
     HttpRequest httpRequest = HttpRequest.newBuilder()
         .uri(uri)
         .GET()
         .build();
-    HttpResponse<String> httpResponse = HttpClient.newHttpClient().send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    HttpResponse<String> httpResponse = HttpClient.newHttpClient()
+        .send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
     // Check if response is successful
     if (httpResponse.statusCode() == 200) {
@@ -94,5 +97,4 @@ public class BroadbandHandler implements Route {
       throw e;
     }
   }
-
 }
