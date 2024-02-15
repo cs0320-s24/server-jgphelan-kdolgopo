@@ -29,7 +29,7 @@ public class Server {
     http.get("/searchcsv", (req, res) -> csvHandler.searchCSV(req, res));
 
     // Setup route for retrieving broadband data
-    http.get("/broadband", (req, res) -> broadbandHandler.getBroadbandData(req, res, cacheManager));
+    http.get("/broadband", (req, res) -> broadbandHandler;
   }
 
   public void start() {
