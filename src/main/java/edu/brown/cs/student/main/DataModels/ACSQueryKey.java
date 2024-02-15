@@ -3,41 +3,33 @@ package edu.brown.cs.student.main.DataModels;
 import java.util.Map;
 
 public class ACSQueryKey {
-  private String year;
-  private String dataset;
-  private String[] variables;
-  private Map<String, String> geoFilters;
-  private String apiKey;
+  private String name;
+  private String broadbandAccessPercentage;
+  private String stateCode;
+  private String countyCode;
 
-  public ACSQueryKey(String year, String dataset, String[] variables, Map<String, String> geoFilters, String apiKey) {
-    this.year = year;
-    this.dataset = dataset;
-    this.variables = variables;
-    this.geoFilters = geoFilters;
-    this.apiKey = apiKey;
+  public ACSQueryKey(String name, String broadbandAccessPercentage, String stateCode,
+      String countyCode) {
+    this.name = name;
+    this.broadbandAccessPercentage = broadbandAccessPercentage;
+    this.stateCode = stateCode;
+    this.countyCode = countyCode;
   }
 
-  // Getters for all fields
-  public String getYear() {
-    return year;
+  public String getName() {
+    return this.name;
   }
 
-  public String getDataset() {
-    return dataset;
+  public String getBroadbandAccessPercentage() {
+    return this.broadbandAccessPercentage;
   }
 
-  public String[] getVariables() {
-    return variables;
+  public String getStateCode() {
+    return this.stateCode;
   }
 
-  public Map<String, String> getGeoFilters() {
-    return geoFilters;
+  public String getCountyCode() {
+    return this.countyCode;
   }
 
-  public String getApiKey() {
-    return apiKey;
-  }
-
-  // Setters for all fields (optional, if you want to allow modification after creation)
-  // ...
 }

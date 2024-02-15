@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main;
+package edu.brown.cs.student.main.main;
 
 import edu.brown.cs.student.main.CSVParserSearch.creators.StringCreator;
 import edu.brown.cs.student.main.CSVParserSearch.parse.CSVParser;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /** The Main class of our project. This is where execution begins. */
-public final class Main {
+public final class CSVmain {
   /**
    * The initial method called when execution begins.
    *
