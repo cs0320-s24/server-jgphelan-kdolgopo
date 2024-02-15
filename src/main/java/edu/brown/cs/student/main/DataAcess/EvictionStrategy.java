@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.DataAcess.CacheManagement;
+package edu.brown.cs.student.main.DataAcess;
 
 import com.google.common.cache.CacheBuilder;
 import java.util.concurrent.TimeUnit;
@@ -10,7 +10,7 @@ public abstract class EvictionStrategy<K, V> {
    *
    * @param cacheBuilder The cache builder to configure.
    */
-  public abstract void configure(CacheBuilder<K, V> cacheBuilder);
+  public abstract void configure(CacheBuilder<Object, Object> cacheBuilder);
 
   /**
    * A size-based eviction strategy.
@@ -23,7 +23,7 @@ public abstract class EvictionStrategy<K, V> {
     }
 
     @Override
-    public void configure(CacheBuilder<K, V> cacheBuilder) {
+    public void configure(CacheBuilder<Object, Object> cacheBuilder) {
       cacheBuilder.maximumSize(maxSize);
     }
   }
@@ -41,7 +41,7 @@ public abstract class EvictionStrategy<K, V> {
     }
 
     @Override
-    public void configure(CacheBuilder<K, V> cacheBuilder) {
+    public void configure(CacheBuilder<Object, Object> cacheBuilder) {
       cacheBuilder.expireAfterWrite(duration, timeUnit);
     }
   }
