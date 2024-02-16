@@ -1,5 +1,7 @@
 package edu.brown.cs.student.main.ServerTests;
 import edu.brown.cs.student.main.APIServer.CodeFetcher;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -37,14 +39,12 @@ public class CodeFetcherTest {
     }
   }
 
-  @Test
-  public void testGetCountyCodeWithInvalidInput() {
-    try {
-      // Testing with an invalid state code and county name
-      String countyCode = CodeFetcher.getCountyCode("99", "Invalid County");
-      assertNull(countyCode);
-    } catch (Exception e) {
-      fail("Exception occurred: " + e.getMessage());
-    }
+  @Test(expected = NullPointerException.class)
+  public void testGetCountyCodeWithInvalidInput()
+      throws IOException, URISyntaxException, InterruptedException {
+    // Testing with an invalid state code and county name
+    String countyCode = CodeFetcher.getCountyCode("99", "Invalid County");
+    assertNull(countyCode);
   }
+
 }

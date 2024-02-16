@@ -1,38 +1,41 @@
 package edu.brown.cs.student.main.ServerTests;
+
 import edu.brown.cs.student.main.APIServer.BroadbandHandler;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.time.LocalDateTime;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import spark.Request;
 import spark.Response;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.time.LocalDateTime;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 public class BroadbandHandlerTest {
 
   private BroadbandHandler broadbandHandler;
-  private RequestMock requestMock;
-  private ResponseMock responseMock;
 
   @Before
   public void setUp() {
     broadbandHandler = new BroadbandHandler();
-    requestMock = new RequestMock();
-    responseMock = new ResponseMock();
   }
 
   @Test
   public void testHandle_Successful() throws IOException, InterruptedException, URISyntaxException {
-    requestMock.setStateQueryParam("California");
-    requestMock.setCountyQueryParam("Los Angeles");
-
-    Object result = broadbandHandler.handle(requestMock, responseMock);
-
+    Request request = createRequest("California", "Los Angeles");
+    Response response = new Response() {
+      @Override
+      public void status(int statusCode) {
+        // Do nothing for testing purposes
+      }
+    };
+    Object result = broadbandHandler.handle(request, response);
     assertNotNull(result);
     Map<String, Object> resultMap = (Map<String, Object>) result;
+    System.out.println(resultMap);
     assertEquals("success", resultMap.get("result"));
     assertNotNull(resultMap.get("datetime"));
     assertEquals("California", resultMap.get("state"));
@@ -42,10 +45,15 @@ public class BroadbandHandlerTest {
 
   @Test
   public void testHandle_InvalidState() throws IOException, InterruptedException, URISyntaxException {
-    requestMock.setStateQueryParam("InvalidState");
-    requestMock.setCountyQueryParam("Los Angeles");
+    Request request = createRequest("InvalidState", "Los Angeles");
+    Response response = new Response() {
+      @Override
+      public void status(int statusCode) {
+        // Do nothing for testing purposes
+      }
+    };
 
-    Object result = broadbandHandler.handle(requestMock, responseMock);
+    Object result = broadbandHandler.handle(request, response);
 
     assertNotNull(result);
     Map<String, Object> resultMap = (Map<String, Object>) result;
@@ -55,10 +63,15 @@ public class BroadbandHandlerTest {
 
   @Test
   public void testHandle_InvalidCounty() throws IOException, InterruptedException, URISyntaxException {
-    requestMock.setStateQueryParam("California");
-    requestMock.setCountyQueryParam("InvalidCounty");
+    Request request = createRequest("California", "InvalidCounty");
+    Response response = new Response() {
+      @Override
+      public void status(int statusCode) {
+        // Do nothing for testing purposes
+      }
+    };
 
-    Object result = broadbandHandler.handle(requestMock, responseMock);
+    Object result = broadbandHandler.handle(request, response);
 
     assertNotNull(result);
     Map<String, Object> resultMap = (Map<String, Object>) result;
@@ -68,10 +81,15 @@ public class BroadbandHandlerTest {
 
   @Test
   public void testHandle_InvalidStateAndCounty() throws IOException, InterruptedException, URISyntaxException {
-    requestMock.setStateQueryParam("InvalidState");
-    requestMock.setCountyQueryParam("InvalidCounty");
+    Request request = createRequest("InvalidState", "InvalidCounty");
+    Response response = new Response() {
+      @Override
+      public void status(int statusCode) {
+        // Do nothing for testing purposes
+      }
+    };
 
-    Object result = broadbandHandler.handle(requestMock, responseMock);
+    Object result = broadbandHandler.handle(request, response);
 
     assertNotNull(result);
     Map<String, Object> resultMap = (Map<String, Object>) result;
@@ -81,39 +99,30 @@ public class BroadbandHandlerTest {
 
   @Test(expected = RuntimeException.class)
   public void testHandle_ExceptionDuringFetchBroadbandData() throws IOException, InterruptedException, URISyntaxException {
-    requestMock.setStateQueryParam("California");
-    requestMock.setCountyQueryParam("Los Angeles");
-
-    //responseMock.setStatusCode(500);
-
-    broadbandHandler.handle(requestMock, responseMock);
-  }
-
-  public class RequestMock extends Request {
-
-    private String stateQueryParam;
-    private String countyQueryParam;
-
-    @Override
-    public String queryParams(String queryParam) {
-      if (queryParam.equals("state")) {
-        return stateQueryParam;
-      } else if (queryParam.equals("county")) {
-        return countyQueryParam;
-      } else {
-        return null;
+    Request request = createRequest("California", "Los Angeles");
+    Response response = new Response() {
+      @Override
+      public void status(int statusCode) {
+        // Do nothing for testing purposes
       }
-    }
+    };
 
-    public void setStateQueryParam(String stateQueryParam) {
-      this.stateQueryParam = stateQueryParam;
-    }
-
-    public void setCountyQueryParam(String countyQueryParam) {
-      this.countyQueryParam = countyQueryParam;
-    }
+    // Call handle method with a request that causes an exception during broadband data fetching
+    broadbandHandler.handle(request, response);
   }
 
-  public class ResponseMock extends Response {
+  private Request createRequest(final String stateQueryParam, final String countyQueryParam) {
+    return new Request() {
+      @Override
+      public String queryParams(String queryParam) {
+        if (queryParam.equals("state")) {
+          return stateQueryParam;
+        } else if (queryParam.equals("county")) {
+          return countyQueryParam;
+        } else {
+          return null;
+        }
+      }
+    };
   }
 }
