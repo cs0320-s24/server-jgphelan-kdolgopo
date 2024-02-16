@@ -48,11 +48,12 @@ public class Server {
     CacheConfiguration cacheConfig = new CacheConfiguration(100, 10, TimeUnit.MINUTES);
     EvictionStrategy<?, ?> evictionStrategy = new EvictionStrategy.SizeBasedEvictionStrategy<>();
 
+    int port = 4567;
     // Create and start the server
-    Server server = new Server(4567, csvHandler, broadbandHandler, cacheConfig, evictionStrategy);
+    Server server = new Server(port, csvHandler, broadbandHandler, cacheConfig, evictionStrategy);
     server.start();
 
-    System.out.println("Server Started:");
+    System.out.println("Server started at http://localhost:" + port);
     // loadcsv?filepath= (input filepath to load)
     // and then the Server localhost page gives you a text saying the parse was successful
   }
