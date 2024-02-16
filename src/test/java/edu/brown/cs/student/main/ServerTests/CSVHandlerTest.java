@@ -11,7 +11,6 @@ import spark.Response;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -22,6 +21,7 @@ public class CSVHandlerTest {
   private CSVHandler csvHandler;
   private Request requestMock;
   private Response responseMock;
+  private static final String BASE_DIRECTORY = "/Users/kseniiadolgopolova/csv-kdolgopo/data";
 
   @Before
   public void setUp() {
@@ -50,7 +50,7 @@ public class CSVHandlerTest {
   }
 
   @Test
-  public void testViewCSV_NullParser() {
+  public void testViewCSV_NullParser() throws IOException {
     Object result = csvHandler.viewCSV(requestMock, responseMock);
     assertNotNull(result);
     // Assert that the result is an error response with "error_bad_request"
@@ -59,14 +59,13 @@ public class CSVHandlerTest {
     assertEquals("No CSV file loaded", resultMap.get("message"));
   }
 
-  @Test
-  public void testViewCSV_IOException() throws FileNotFoundException {
-    CSVHandler.parser = new CSVParser<>(new FileReader("nonexistent.csv"), new StringCreator(), false);
-    // Test viewCSV method when an IO exception occurs
+  @Test(expected = FileNotFoundException.class)
+  public void testViewCSV_FileNotFound() throws IOException {
+    CSVHandler.parser = new CSVParser<>(new FileReader(BASE_DIRECTORY + "/" + "nonexistent.csv"), new StringCreator(), false);
     Object result = csvHandler.viewCSV(requestMock, responseMock);
     assertNotNull(result);
-    // Assert that the result is an error response with "error_datasource"
     Map<String, Object> resultMap = (Map<String, Object>) result;
+    // Assert that the result is an error response with "error_datasource"
     assertEquals("error_datasource", resultMap.get("result"));
     assertEquals("Error reading CSV file", resultMap.get("message"));
   }
@@ -75,7 +74,7 @@ public class CSVHandlerTest {
   public void testSearchCSV_InvalidColumnIdentifier() throws FileNotFoundException {
     ((RequestMock) requestMock).setIdentifier("nonexistent");
     // Set the parser to return empty list for headers
-    CSVHandler.parser = new CSVParser<>(new FileReader("test.csv"), new StringCreator(), false);
+    CSVHandler.parser = new CSVParser<>(new FileReader(BASE_DIRECTORY + "/" + "test.csv"), new StringCreator(), false);
     // Test searchCSV method with invalid column identifier
     Object result = csvHandler.searchCSV(requestMock, responseMock);
     assertNotNull(result);

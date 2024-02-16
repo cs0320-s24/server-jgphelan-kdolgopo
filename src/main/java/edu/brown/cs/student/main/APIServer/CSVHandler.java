@@ -28,7 +28,7 @@ public class CSVHandler {
     }
   }
 
-  public static Object viewCSV(Request request, Response response) {
+  public static Object viewCSV(Request request, Response response) throws IOException {
     // ensures that loadcsv was called before this request
     if (parser == null) {
       return createErrorResponse("error_bad_request", "No CSV file loaded");
@@ -36,7 +36,7 @@ public class CSVHandler {
     try {
       List<List<String>> csvData = parser.parseCSV();
       return createSuccessResponse(csvData);
-    } catch (IOException e) {
+    } catch (FileNotFoundException e) {
       return createErrorResponse("error_datasource", "Error reading CSV file");
     }
   }
