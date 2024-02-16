@@ -53,5 +53,7 @@ public class Server {
     server.start();
 
     System.out.println("Server Started:");
+    // loadcsv?filepath= (input filepath to load)
+    // and then the Server localhost page gives you a text saying the parse was successful
   }
 }

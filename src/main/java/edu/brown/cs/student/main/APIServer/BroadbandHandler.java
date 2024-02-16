@@ -20,7 +20,7 @@ import spark.Route;
 
 public class BroadbandHandler implements Route {
 
-  private static final String CENSUS_API_URL = "https://api.census.gov/data/2010/variables";
+  private static final String CENSUS_API_URL = "https://api.census.gov/data/2021/acs/acs1/subject/variables";
 
   @Override
   public Object handle(Request request, Response response) {
@@ -62,7 +62,7 @@ public class BroadbandHandler implements Route {
   private String fetchBroadbandData(String query)
       throws URISyntaxException, IOException, InterruptedException {
     // Build request to the Census API for broadband data
-    URI uri = new URI(CENSUS_API_URL + "?get=NAME&for=" + query);
+    URI uri = new URI(CENSUS_API_URL + "?get=NAME,S2802_C03_022E&for=" + query);
     HttpRequest httpRequest = HttpRequest.newBuilder()
         .uri(uri)
         .GET()
