@@ -24,27 +24,27 @@ public class CSVHandler {
       parser = new CSVParser<>(new FileReader(filepath), new StringCreator(), false);
       return createSuccessResponse("CSV file loaded successfully");
     } catch (FileNotFoundException e) {
-      return createErrorResponse("error_source", "File not found");
+      return createErrorResponse("error_datasource", "File not found");
     }
   }
 
   public static Object viewCSV(Request request, Response response) {
     // ensures that loadcsv was called before this request
     if (parser == null) {
-      return createErrorResponse("error_request", "No CSV file loaded");
+      return createErrorResponse("error_bad_request", "No CSV file loaded");
     }
     try {
       List<List<String>> csvData = parser.parseCSV();
       return createSuccessResponse(csvData);
     } catch (IOException e) {
-      return createErrorResponse("error_source", "Error reading CSV file");
+      return createErrorResponse("error_datasource", "Error reading CSV file");
     }
   }
 
   public static Object searchCSV(Request request, Response response) {
     // ensures that loadcsv was called before this request
     if (parser == null) {
-      return createErrorResponse("error_request", "No CSV file loaded");
+      return createErrorResponse("error_bad_request", "No CSV file loaded");
     }
     String value = request.queryParams("value");
     String identifier = request.queryParams("identifier");
@@ -60,10 +60,10 @@ public class CSVHandler {
           headers = parser.parseCSV().get(0);
           columnIndex = headers.indexOf(identifier);
           if (columnIndex == -1) {
-            return createErrorResponse("error_request", "Invalid column identifier");
+            return createErrorResponse("error_bad_request", "Invalid column identifier");
           }
         } catch (IOException ex) {
-          return createErrorResponse("error_source", "Error reading CSV file");
+          return createErrorResponse("error_datasource", "Error reading CSV file");
         }
       }
     }

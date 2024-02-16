@@ -1,4 +1,7 @@
 package edu.brown.cs.student.main.APIServer;
+import static edu.brown.cs.student.main.APIServer.CodeFetcher.getCountyCode;
+import static edu.brown.cs.student.main.APIServer.CodeFetcher.getStateCode;
+
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
