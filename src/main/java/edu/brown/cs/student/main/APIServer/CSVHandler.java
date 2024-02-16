@@ -14,14 +14,14 @@ import java.util.List;
 import java.util.Map;
 
 public class CSVHandler {
-
-  private static CSVParser<List<String>> parser;
+  private static final String BASE_DIRECTORY = "/Users/kseniiadolgopolova/csv-kdolgopo/data";
+  public static CSVParser<List<String>> parser;
   private static Search<List<String>> search;
 
   public static Object loadCSV(Request request, Response response) {
     String filepath = request.queryParams("filepath");
     try {   // "header" value should be whatever the user provides (that's how it worked in my code)
-      parser = new CSVParser<>(new FileReader(filepath), new StringCreator(), false);
+      parser = new CSVParser<>(new FileReader(BASE_DIRECTORY + "/" + filepath), new StringCreator(), false);
       return createSuccessResponse("CSV file loaded successfully");
     } catch (FileNotFoundException e) {
       return createErrorResponse("error_datasource", "File not found");
