@@ -21,7 +21,7 @@ public class CodeFetcher {
       return stateCodeCache.get(stateName);
     }
     String apiKey = "aa979b28dba65963c8a78da9cd8bec38a6b3d6a0";
-    String apiUrl = BASE_URL + "/states?get=NAME&key=" + apiKey;
+    String apiUrl = BASE_URL; // + "/states?get=NAME&key=" + apiKey;
     HttpRequest request = HttpRequest.newBuilder()
         .uri(new URI(apiUrl))
         .build();
@@ -36,7 +36,6 @@ public class CodeFetcher {
         return stateCode;
       }
     }
-
     // If state code not found:
     return null;
   }
