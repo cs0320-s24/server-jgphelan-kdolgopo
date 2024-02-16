@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 public class CodeFetcher {
 
   private static final String BASE_URL = "https://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*";
+  private static final String COUNTY_URL = "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:*&in=state:";
   private static final HttpClient httpClient = HttpClient.newHttpClient();
   private static Map<String, String> stateCodeCache = new HashMap<>();
 
@@ -25,7 +26,6 @@ public class CodeFetcher {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(new URI(apiUrl))
         .build();
-
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
     String[][] data = parseResponse(response.body());
@@ -42,7 +42,7 @@ public class CodeFetcher {
 
   public static String getCountyCode(String stateCode, String countyName) throws IOException, InterruptedException, URISyntaxException {
     String apiKey = "aa979b28dba65963c8a78da9cd8bec38a6b3d6a0";
-    String apiUrl = BASE_URL + "/county?get=NAME&for=county:*&in=state:" + stateCode + "&key=" + apiKey;
+    String apiUrl = COUNTY_URL + stateCode;
     HttpRequest request = HttpRequest.newBuilder()
         .uri(new URI(apiUrl))
         .build();

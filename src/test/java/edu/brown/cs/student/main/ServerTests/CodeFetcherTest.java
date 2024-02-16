@@ -13,7 +13,6 @@ public class CodeFetcherTest {
     } catch (Exception e) {
       fail("Exception occurred: " + e.getMessage());
     }
-    //System.out.println(stateCode);
   }
 
   @Test
