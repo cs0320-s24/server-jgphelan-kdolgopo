@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 
 public class CodeFetcher {
 
-  private static final String BASE_URL = "https://api.census.gov/data/2010/dec/sf1";
+  private static final String BASE_URL = "https://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*";
   private static final HttpClient httpClient = HttpClient.newHttpClient();
   private static Map<String, String> stateCodeCache = new HashMap<>();
 

@@ -61,7 +61,7 @@ public class CSVHandlerTest {
 
   @Test(expected = FileNotFoundException.class)
   public void testViewCSV_FileNotFound() throws IOException {
-    CSVHandler.parser = new CSVParser<>(new FileReader(BASE_DIRECTORY + "/" + "nonexistent.csv"), new StringCreator(), false);
+    CSVHandler.parser = new CSVParser<>(new FileReader("nonexistent.csv"), new StringCreator(), false);
     Object result = csvHandler.viewCSV(requestMock, responseMock);
     assertNotNull(result);
     Map<String, Object> resultMap = (Map<String, Object>) result;
