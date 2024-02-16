@@ -35,6 +35,7 @@ public class BroadbandHandler implements Route {
       String countyCode = getCountyCode(stateCode, countyName);
 
       if (stateCode == null || countyCode == null) {
+        response.status(400); // Bad Request status code
         responseMap.put("result", "error_bad_request");
         responseMap.put("message", "Invalid state or county name");
         return serialize(responseMap);
@@ -44,20 +45,26 @@ public class BroadbandHandler implements Route {
 
       String broadbandData = fetchBroadbandData(query);
 
+      response.status(200); // OK status code
       responseMap.put("result", "success");
       responseMap.put("datetime", LocalDateTime.now().toString());
       responseMap.put("state", stateName);
       responseMap.put("county", countyName);
       responseMap.put("broadband_data", broadbandData);
 
-      return serialize(responseMap);
+      response.body(serialize(responseMap)); // Set the response body
+
+      return ""; // Empty string since we've already set the response body
     } catch (Exception e) {
       e.printStackTrace();
+      response.status(500); // Internal Server Error status code
       responseMap.put("result", "error_exception");
       responseMap.put("message", "An exception occurred");
-      return serialize(responseMap);
+      response.body(serialize(responseMap)); // Set the response body
+      return ""; // Empty string since we've already set the response body
     }
   }
+
 
   private String fetchBroadbandData(String query)
       throws URISyntaxException, IOException, InterruptedException {
