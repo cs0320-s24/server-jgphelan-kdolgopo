@@ -13,6 +13,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import spark.Request;
 import spark.Response;
@@ -30,20 +31,35 @@ public class BroadbandHandler implements Route {
       String stateName = request.queryParams("state");
       String countyName = request.queryParams("county");
 
-      // Convert state and county names to numeric codes
-      String stateCode = getStateCode(stateName);
-      String countyCode = getCountyCode(stateCode, countyName);
-
-      if (stateCode == null || countyCode == null) {
+      // Ensure state and county names are not null
+      if (stateName == null || countyName == null) {
         response.status(400); // Bad Request status code
         responseMap.put("result", "error_bad_request");
-        responseMap.put("message", "Invalid state or county name");
+        responseMap.put("message", "State and county names must be provided");
         return serialize(responseMap);
       }
 
-      String query = "county:" + countyCode + "&in=state:" + stateCode;
+      // Get state code
+      String stateCode = CodeFetcher.getStateCode(stateName);
+      if (stateCode == null) {
+        response.status(400); // Bad Request status code
+        responseMap.put("result", "error_bad_request");
+        responseMap.put("message", "Invalid state name");
+        return serialize(responseMap);
+      }
 
-      String broadbandData = fetchBroadbandData(query);
+      // Get county code
+      String countyCode = CodeFetcher.getCountyCode(stateCode, countyName);
+      if (countyCode == null) {
+        response.status(400); // Bad Request status code
+        responseMap.put("result", "error_bad_request");
+        responseMap.put("message", "Invalid county name");
+        return serialize(responseMap);
+      }
+
+
+      String query = "county:" + countyCode + "&in=state:" + stateCode;
+      Map<String, Object> broadbandData = fetchBroadbandData(query);
 
       response.status(200); // OK status code
       responseMap.put("result", "success");
@@ -52,21 +68,18 @@ public class BroadbandHandler implements Route {
       responseMap.put("county", countyName);
       responseMap.put("broadband_data", broadbandData);
 
-      response.body(serialize(responseMap)); // Set the response body
-
-      return ""; // Empty string since we've already set the response body
+      return serialize(responseMap);
     } catch (Exception e) {
       e.printStackTrace();
       response.status(500); // Internal Server Error status code
       responseMap.put("result", "error_exception");
       responseMap.put("message", "An exception occurred");
-      response.body(serialize(responseMap)); // Set the response body
-      return ""; // Empty string since we've already set the response body
+      return serialize(responseMap);
     }
   }
 
 
-  private String fetchBroadbandData(String query)
+  private Map<String, Object> fetchBroadbandData(String query)
       throws URISyntaxException, IOException, InterruptedException {
     // Build request to the Census API for broadband data
     URI uri = new URI(CENSUS_API_URL + "?get=NAME,S2802_C03_022E&for=" + query);
@@ -79,22 +92,38 @@ public class BroadbandHandler implements Route {
 
     // Check if response is successful
     if (httpResponse.statusCode() == 200) {
-      return httpResponse.body();
+      // Parse JSON response
+      Moshi moshi = new Moshi.Builder().build();
+      JsonAdapter<List<List<Object>>> adapter = moshi.adapter(
+          Types.newParameterizedType(List.class, List.class, Object.class));
+      List<List<Object>> responseData = adapter.fromJson(httpResponse.body());
+
+      // Extract data from response
+      if (responseData != null && responseData.size() > 1) {
+        List<Object> dataRow = responseData.get(1); // Skip header row
+        Map<String, Object> broadbandData = new HashMap<>();
+        broadbandData.put("county", dataRow.get(0));
+        broadbandData.put("percentage", dataRow.get(1));
+        return broadbandData;
+      } else {
+        throw new RuntimeException("Invalid response format or empty data");
+      }
     } else {
       throw new RuntimeException("Failed to fetch broadband data from Census API");
     }
   }
 
+
   private String serialize(Map<String, Object> responseMap) {
     try {
       Moshi moshi = new Moshi.Builder().build();
-      // Specify the generic types explicitly to match the required type
       JsonAdapter<Map<String, Object>> adapter = moshi.adapter(
           Types.newParameterizedType(Map.class, String.class, Object.class));
       return adapter.toJson(responseMap);
     } catch (Exception e) {
       e.printStackTrace();
-      throw e;
+      return "{\"error\": \"Failed to serialize responseMap; the response does not match the expected format\"}";
     }
   }
+
 }

@@ -32,8 +32,11 @@ public class BroadbandHandlerTest {
         // Do nothing for testing purposes
       }
     };
+    System.out.println("0");
     Object result = broadbandHandler.handle(request, response);
+    System.out.println("1");
     assertNotNull(result);
+    System.out.println("");
     Map<String, Object> resultMap = (Map<String, Object>) result;
     System.out.println(resultMap);
     assertEquals("success", resultMap.get("result"));
