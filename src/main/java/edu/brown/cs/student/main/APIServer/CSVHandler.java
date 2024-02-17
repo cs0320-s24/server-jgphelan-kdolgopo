@@ -13,14 +13,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Handles CSV file operations such as loading, viewing, and searching.
+ */
 public class CSVHandler {
   private static final String BASE_DIRECTORY = "/Users/kseniiadolgopolova/csv-kdolgopo/data";
   public static CSVParser<List<String>> parser;
   private static Search<List<String>> search;
 
+  /**
+   * Loads a CSV file from the specified filepath.
+   *
+   * @param request  The HTTP request containing the filepath parameter.
+   * @param response The HTTP response to be sent back.
+   * @return A success response map if the CSV file is loaded successfully, or an error response map if the file is not found.
+   */
   public static Object loadCSV(Request request, Response response) {
     String filepath = request.queryParams("filepath");
-    try {   // "header" value should be whatever the user provides (that's how it worked in my code)
+    try {
       parser = new CSVParser<>(new FileReader(filepath), new StringCreator(), false);
       return createSuccessResponse("CSV file loaded successfully");
     } catch (FileNotFoundException e) {
@@ -28,6 +38,14 @@ public class CSVHandler {
     }
   }
 
+  /**
+   * Views the contents of the loaded CSV file.
+   *
+   * @param request  The HTTP request.
+   * @param response The HTTP response to be sent back.
+   * @return A success response map containing the CSV data, or an error response map if no CSV file is loaded or an error occurs while reading the file.
+   * @throws IOException If an error occurs while reading the CSV file.
+   */
   public static Object viewCSV(Request request, Response response) throws IOException {
     // ensures that loadcsv was called before this request
     if (parser == null) {
@@ -41,6 +59,13 @@ public class CSVHandler {
     }
   }
 
+  /**
+   * Searches for a specific value in the loaded CSV file.
+   *
+   * @param request  The HTTP request containing the search parameters.
+   * @param response The HTTP response to be sent back.
+   * @return A success response map containing the search results, or an error response map if no CSV file is loaded or an invalid column identifier is provided.
+   */
   public static Object searchCSV(Request request, Response response) {
     // ensures that loadcsv was called before this request
     if (parser == null) {

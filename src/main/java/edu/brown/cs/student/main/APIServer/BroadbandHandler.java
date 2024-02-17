@@ -1,6 +1,4 @@
 package edu.brown.cs.student.main.APIServer;
-import static edu.brown.cs.student.main.APIServer.CodeFetcher.getCountyCode;
-import static edu.brown.cs.student.main.APIServer.CodeFetcher.getStateCode;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -19,19 +17,31 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * Route handler class for processing broadband data requests.
+ */
 public class BroadbandHandler implements Route {
 
   private static final String CENSUS_API_URL = "https://api.census.gov/data/2021/acs/acs1/subject/variables";
 
+  /**
+   * Handles incoming HTTP requests related to broadband data.
+   *
+   * @param request  The HTTP request object.
+   * @param response The HTTP response object.
+   * @return An object representing the response to the HTTP request.
+   */
   @Override
   public Object handle(Request request, Response response) {
+    // Initialize response map
     Map<String, Object> responseMap = new HashMap<>();
 
     try {
+      // Extract state and county names from request parameters
       String stateName = request.queryParams("state");
       String countyName = request.queryParams("county");
 
-      // Ensure state and county names are not null
+      // Validate that state and county names are provided
       if (stateName == null || countyName == null) {
         response.status(400); // Bad Request status code
         responseMap.put("result", "error_bad_request");
@@ -39,7 +49,7 @@ public class BroadbandHandler implements Route {
         return serialize(responseMap);
       }
 
-      // Get state code
+      // Retrieve state code
       String stateCode = CodeFetcher.getStateCode(stateName);
       if (stateCode == null) {
         response.status(400); // Bad Request status code
@@ -48,7 +58,7 @@ public class BroadbandHandler implements Route {
         return serialize(responseMap);
       }
 
-      // Get county code
+      // Retrieve county code
       String countyCode = CodeFetcher.getCountyCode(stateCode, countyName);
       if (countyCode == null) {
         response.status(400); // Bad Request status code
@@ -57,10 +67,13 @@ public class BroadbandHandler implements Route {
         return serialize(responseMap);
       }
 
-
+      // Construct query string for fetching broadband data
       String query = "county:" + countyCode + "&in=state:" + stateCode;
+
+      // Fetch broadband data
       Map<String, Object> broadbandData = fetchBroadbandData(query);
 
+      // Populate response map
       response.status(200); // OK status code
       responseMap.put("result", "success");
       responseMap.put("datetime", LocalDateTime.now().toString());
@@ -78,7 +91,15 @@ public class BroadbandHandler implements Route {
     }
   }
 
-
+  /**
+   * Fetches broadband data from the Census API based on the provided query.
+   *
+   * @param query The query string for fetching broadband data.
+   * @return A Map containing broadband data.
+   * @throws URISyntaxException    If the provided query string is invalid.
+   * @throws IOException           If an I/O error occurs during the HTTP request.
+   * @throws InterruptedException If the HTTP request is interrupted.
+   */
   private Map<String, Object> fetchBroadbandData(String query)
       throws URISyntaxException, IOException, InterruptedException {
     // Build request to the Census API for broadband data
@@ -113,7 +134,12 @@ public class BroadbandHandler implements Route {
     }
   }
 
-
+  /**
+   * Serializes a Map object to a JSON string.
+   *
+   * @param responseMap The Map object to serialize.
+   * @return A JSON string representing the serialized Map.
+   */
   private String serialize(Map<String, Object> responseMap) {
     try {
       Moshi moshi = new Moshi.Builder().build();

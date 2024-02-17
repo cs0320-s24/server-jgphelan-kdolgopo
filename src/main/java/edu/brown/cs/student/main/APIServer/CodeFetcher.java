@@ -1,4 +1,6 @@
 package edu.brown.cs.student.main.APIServer;
+
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 import java.net.URI;
@@ -8,8 +10,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
-import com.google.gson.Gson;
 
+/**
+ * Utility class for fetching state and county codes from the Census API.
+ */
 public class CodeFetcher {
 
   private static final String BASE_URL = "https://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*";
@@ -17,17 +21,29 @@ public class CodeFetcher {
   private static final HttpClient httpClient = HttpClient.newHttpClient();
   private static Map<String, String> stateCodeCache = new HashMap<>();
 
+  /**
+   * Retrieves the state code for the given state name.
+   *
+   * @param stateName The name of the state.
+   * @return The state code corresponding to the provided state name.
+   * @throws IOException        If an I/O error occurs during the HTTP request.
+   * @throws InterruptedException If the HTTP request is interrupted.
+   * @throws URISyntaxException If the provided URI syntax is invalid.
+   */
   public static String getStateCode(String stateName) throws IOException, InterruptedException, URISyntaxException {
+    // Check if the state code is already cached
     if (stateCodeCache.containsKey(stateName)) {
       return stateCodeCache.get(stateName);
     }
-    String apiKey = "aa979b28dba65963c8a78da9cd8bec38a6b3d6a0";
-    String apiUrl = BASE_URL; // + "/states?get=NAME&key=" + apiKey;
+
+    // Build the API URL for fetching state data
+    String apiUrl = BASE_URL;
     HttpRequest request = HttpRequest.newBuilder()
         .uri(new URI(apiUrl))
         .build();
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
+    // Parse the response to extract state codes
     String[][] data = parseResponse(response.body());
     for (String[] row : data) {
       if (row[0].equalsIgnoreCase(stateName)) {
@@ -40,13 +56,24 @@ public class CodeFetcher {
     return null;
   }
 
+  /**
+   * Retrieves the county code for the given state code and county name.
+   *
+   * @param stateCode  The code of the state.
+   * @param countyName The name of the county.
+   * @return The county code corresponding to the provided state code and county name.
+   * @throws IOException        If an I/O error occurs during the HTTP request.
+   * @throws InterruptedException If the HTTP request is interrupted.
+   * @throws URISyntaxException If the provided URI syntax is invalid.
+   */
   public static String getCountyCode(String stateCode, String countyName) throws IOException, InterruptedException, URISyntaxException {
-    String apiKey = "aa979b28dba65963c8a78da9cd8bec38a6b3d6a0";
+    // Build the API URL for fetching county data
     String apiUrl = COUNTY_URL + stateCode;
     HttpRequest request = HttpRequest.newBuilder()
         .uri(new URI(apiUrl))
         .build();
 
+    // Send the HTTP request and receive the response
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
     // Parse the response JSON to get the county code
@@ -61,6 +88,12 @@ public class CodeFetcher {
     return null;
   }
 
+  /**
+   * Parses a JSON response string into a 2D array of strings.
+   *
+   * @param response The JSON response string to parse.
+   * @return A 2D array of strings representing the parsed response data.
+   */
   private static String[][] parseResponse(String response) {
     try {
       // Assuming response is a JSON array of arrays
@@ -70,6 +103,5 @@ public class CodeFetcher {
       return null;
     }
   }
-
 
 }

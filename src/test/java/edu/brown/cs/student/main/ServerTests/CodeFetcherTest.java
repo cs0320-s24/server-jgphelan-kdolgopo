@@ -1,4 +1,8 @@
+/**
+ * This class contains unit tests for the {@link CodeFetcher} class.
+ */
 package edu.brown.cs.student.main.ServerTests;
+
 import edu.brown.cs.student.main.APIServer.CodeFetcher;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -6,6 +10,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class CodeFetcherTest {
+
+  /**
+   * Tests the {@link CodeFetcher#getStateCode(String)} method with a valid state name.
+   */
   @Test
   public void testGetStateCode() {
     try {
@@ -17,6 +25,9 @@ public class CodeFetcherTest {
     }
   }
 
+  /**
+   * Tests the {@link CodeFetcher#getCountyCode(String, String)} method with valid inputs.
+   */
   @Test
   public void testGetCountyCode() {
     try {
@@ -28,6 +39,9 @@ public class CodeFetcherTest {
     }
   }
 
+  /**
+   * Tests the {@link CodeFetcher#getStateCode(String)} method with an invalid state name.
+   */
   @Test
   public void testGetStateCodeWithInvalidInput() {
     try {
@@ -39,6 +53,12 @@ public class CodeFetcherTest {
     }
   }
 
+  /**
+   * Tests the {@link CodeFetcher#getCountyCode(String, String)} method with invalid inputs.
+   * @throws IOException If an I/O error occurs.
+   * @throws URISyntaxException If a URI syntax error occurs.
+   * @throws InterruptedException If the operation is interrupted.
+   */
   @Test(expected = NullPointerException.class)
   public void testGetCountyCodeWithInvalidInput()
       throws IOException, URISyntaxException, InterruptedException {

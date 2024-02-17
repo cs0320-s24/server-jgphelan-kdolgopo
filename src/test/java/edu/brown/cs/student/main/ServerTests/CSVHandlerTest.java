@@ -16,12 +16,15 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * Unit tests for the CSVHandler class.
+ */
 public class CSVHandlerTest {
 
   private CSVHandler csvHandler;
   private Request requestMock;
   private Response responseMock;
-  private static final String BASE_DIRECTORY = "/Users/kseniiadolgopolova/csv-kdolgopo/data";
+  private static final String BASE_DIRECTORY = "/Users/kseniiadolgopolova/csv-kdolgopo/data/";
 
   @Before
   public void setUp() {
@@ -29,15 +32,21 @@ public class CSVHandlerTest {
     requestMock = new RequestMock();
   }
 
+  /**
+   * Test for loading a CSV file when the file is found.
+   */
   @Test
   public void testLoadCSV_FileFound() {
-    ((RequestMock) requestMock).setFilePath("test.csv");
+    ((RequestMock) requestMock).setFilePath(BASE_DIRECTORY + "test.csv");
     Object result = csvHandler.loadCSV(requestMock, responseMock);
     assertNotNull(result);
     Map<String, Object> resultMap = (Map<String, Object>) result;
     assertEquals("success", resultMap.get("result"));
   }
 
+  /**
+   * Test for loading a CSV file when the file is not found.
+   */
   @Test
   public void testLoadCSV_FileNotFound() {
     ((RequestMock) requestMock).setFilePath("nonexistent.csv");
@@ -49,6 +58,11 @@ public class CSVHandlerTest {
     assertEquals("File not found", resultMap.get("message"));
   }
 
+  /**
+   * Test for viewing a CSV file when the parser is null.
+   *
+   * @throws IOException If an I/O error occurs.
+   */
   @Test
   public void testViewCSV_NullParser() throws IOException {
     Object result = csvHandler.viewCSV(requestMock, responseMock);
@@ -59,6 +73,11 @@ public class CSVHandlerTest {
     assertEquals("No CSV file loaded", resultMap.get("message"));
   }
 
+  /**
+   * Test for viewing a CSV file when the file is not found.
+   *
+   * @throws IOException If an I/O error occurs.
+   */
   @Test(expected = FileNotFoundException.class)
   public void testViewCSV_FileNotFound() throws IOException {
     CSVHandler.parser = new CSVParser<>(new FileReader("nonexistent.csv"), new StringCreator(), false);
@@ -70,6 +89,11 @@ public class CSVHandlerTest {
     assertEquals("Error reading CSV file", resultMap.get("message"));
   }
 
+  /**
+   * Test for searching a CSV file with an invalid column identifier.
+   *
+   * @throws FileNotFoundException If the file is not found.
+   */
   @Test
   public void testSearchCSV_InvalidColumnIdentifier() throws FileNotFoundException {
     ((RequestMock) requestMock).setIdentifier("nonexistent");
