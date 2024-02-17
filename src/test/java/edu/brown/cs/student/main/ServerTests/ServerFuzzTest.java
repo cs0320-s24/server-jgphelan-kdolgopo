@@ -4,7 +4,6 @@ import edu.brown.cs.student.main.APIServer.BroadbandHandler;
 import edu.brown.cs.student.main.APIServer.CSVHandler;
 import edu.brown.cs.student.main.DataAcess.CacheConfiguration;
 import edu.brown.cs.student.main.DataAcess.EvictionStrategy;
-import edu.brown.cs.student.main.main.Server;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -15,13 +14,20 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Random;
 import spark.Service;
+
+/**
+ * Class for testing the server using fuzzing techniques.
+ */
 public class ServerFuzzTest {
 
-  private static final String BASE_URL = "http://localhost:4570"; // Adjust the port if necessary
+  private static final String BASE_URL = "http://localhost:4567"; // Adjust the port if necessary
   private static final int TEST_ITERATIONS = 10;
   private static final Random random = new Random();
   private static Service http;
 
+  /**
+   * Setup method to initialize the server and its configurations.
+   */
   @BeforeAll
   public static void setup() {
     http = Service.ignite().port(4570);
@@ -42,6 +48,11 @@ public class ServerFuzzTest {
     http.awaitInitialization();
   }
 
+  /**
+   * Method for performing fuzz testing on the server.
+   *
+   * @throws IOException if an I/O error occurs.
+   */
   @Test
   public void fuzzTestServer() throws IOException {
     for (int i = 0; i < TEST_ITERATIONS; i++) {
@@ -61,37 +72,48 @@ public class ServerFuzzTest {
     }
   }
 
-    private String getRandomEndpoint() {
-        // Return a random endpoint like "loadcsv", "viewcsv", "searchcsv", "broadband"
-        String[] endpoints = {"loadcsv", "viewcsv", "searchcsv", "broadband"};
-        return "/" + endpoints[random.nextInt(endpoints.length)];
-    }
+  /**
+   * Generates a random endpoint to test.
+   *
+   * @return a random endpoint as a string.
+   */
+  private String getRandomEndpoint() {
+    // Return a random endpoint like "loadcsv", "viewcsv", "searchcsv", "broadband"
+    String[] endpoints = {"loadcsv", "viewcsv", "searchcsv", "broadband"};
+    return "/" + endpoints[random.nextInt(endpoints.length)];
+  }
 
-    private String getRandomQueryForEndpoint(String endpoint) {
-        // Return a random query string based on the endpoint
-        switch (endpoint) {
-            case "/loadcsv":
-              return "?filepath=randomfile" + random.nextInt(100) + ".csv";
-            case "/viewcsv":
-                // Logic for viewcsv endpoint
-              return ""; // Placeholder
-            case "/searchcsv":
-              // Randomly decide the search method (by index, header, or all columns)
-              int searchType = random.nextInt(3);
-              switch (searchType) {
-                case 0: // Search by column index
-                  return "?index=" + random.nextInt(10) + "&value=" + "sampleValue";
-                case 1: // Search by column header
-                  return "?header=" + "sampleHeader" + "&value=" + "sampleValue";
-                case 2: // Search across all columns
-                  return "?value=" + "sampleValue";
-                default:
-                  return "";
-              }
-          case "/broadband":
-                return "?state=RI&county=Providence"; // Example query
-            default:
-                return "";
+  /**
+   * Generates a random query string based on the endpoint.
+   *
+   * @param endpoint the endpoint to generate a query for.
+   * @return a query string for the specified endpoint.
+   */
+  private String getRandomQueryForEndpoint(String endpoint) {
+    // Return a random query string based on the endpoint
+    switch (endpoint) {
+      case "/loadcsv":
+        return "?filepath=randomfile" + random.nextInt(100) + ".csv";
+      case "/viewcsv":
+        // Logic for viewcsv endpoint
+        return ""; // Placeholder
+      case "/searchcsv":
+        // Randomly decide the search method (by index, header, or all columns)
+        int searchType = random.nextInt(3);
+        switch (searchType) {
+          case 0: // Search by column index
+            return "?index=" + random.nextInt(10) + "&value=" + "sampleValue";
+          case 1: // Search by column header
+            return "?header=" + "sampleHeader" + "&value=" + "sampleValue";
+          case 2: // Search across all columns
+            return "?value=" + "sampleValue";
+          default:
+            return "";
         }
+      case "/broadband":
+        return "?state=RI&county=Providence"; // Example query
+      default:
+        return "";
     }
+  }
 }
